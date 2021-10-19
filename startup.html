@@ -1,0 +1,29 @@
+<title>Splashy Studio 4</title>
+<img width="555" height="555" src="ss4.png"><br><br>
+<b id="makerCredits">By MWB</b><br><br>
+<span id="text">Loading product...</span>
+<style>
+body {
+     text-align: center;
+     font-family: "Segoe UI";
+     user-select: none;
+}
+#text {
+     background: linear-gradient(to bottom, cornflowerblue 0%, #0073e6 50%, #0000ff 100%);
+     font-size: 30px;
+     margin-top: 25px;
+     -webkit-background-clip: text;
+     -webkit-text-fill-color: transparent;
+}
+#makerCredits {
+     color: #0080ff;
+}
+</style>
+<script>
+window.setTimeout(startupSS4, 1500);
+function startupSS4() {
+     if(window.location) {
+          window.location='effect.html'+window.location.hash;
+     }
+}
+</script>

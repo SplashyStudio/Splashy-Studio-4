@@ -1,0 +1,373 @@
+<h3>Editing Modes</h3>
+<button id="mode1" onclick="showCustomImageMode()" title="Make your own drawn image">Create Image</button><br><br>
+<button id="mode2" onclick="showEditImageMode()" title="Edit pictures on your computer">Edit Image</button><br><br>
+<div id="customImageMode">
+     <h3>Format</h3>
+     <div id="favoritesContainer">
+          <label for="favoriteColor">Color</label>
+          <input type="color" style="cursor:pointer" name="favcolor" id="favcolor" value="#ff0000" onchange="favoriteColor(this)">
+     </div><br>
+     <div id="penSize" class="penSize">
+          <label for="penSize">Size</label>
+          <input type="range" name="penSize" style="cursor:pointer" id="penSlider" value="10" step="1" min="1" max="100" onchange="penSizeChange(this.value)">
+     </div><br>
+     <h3>File Actions</h3>
+     <a onclick="foto.export()" id="saveAndDownload" title="Save to your computer">&nbsp;Download&nbsp;</a>
+     <a onclick="wipeEverything()" id="clearCanvas" title="Erase everything">&nbsp;Wipe&nbsp;</a><br><br>
+     <div class="board">
+          <canvas id="paintingCanvas" width="500" height="500" style="background:white;cursor:none"></canvas>
+     </div><br>
+     <h3>Size</h3>
+     <a id="zoomIn" onclick="zoomCanvasIn()" title="Increase canvas size">&nbsp;+&nbsp;</a>
+     <a id="zoomNormally" onclick="zoomCanvasNormally()" title="Normalize canvas size">&nbsp;=&nbsp;</a>
+     <a id="zoomOut" onclick="zoomCanvasOut()" title="Decrease canvas size">&nbsp;-&nbsp;</a>
+</div>
+<div id="editingImageMode" style="display:none">
+     <h3>File Actions</h3>
+     <a onclick="foto.export()" id="editSaveAndDownload" title="Save to your computer">&nbsp;Download&nbsp;</a>
+     <a onclick="wipeEverything()" id="editClearCanvas" title="Erase everything">&nbsp;Wipe&nbsp;</a>
+     <div class="file-upload-section" onclick="selectImage()">
+          <input id="foto-file" type="file" style="font-family:Century Gothic;font-weight:bold"><p id="selectText" title="Select a picture">Select Picture</p>
+     </div><br>
+     <div class="img-container">
+          <img id="foto-image" class="image">
+     </div><br>
+     <h3>Size</h3>
+     <a id="editZoomIn" onclick="zoomEditCanvasIn()" title="Increase canvas size">&nbsp;+&nbsp;</a>
+     <a id="editZoomNormally" onclick="zoomEditCanvasNormally()" title="Normalize canvas size">&nbsp;=&nbsp;</a>
+     <a id="editZoomOut" onclick="zoomEditCanvasOut()" title="Decrease canvas size">&nbsp;-&nbsp;</a><br><br>
+     <h3>Filters</h3>
+     <div class="buttons-section">
+          <table class="buttons-table">
+               <tr>
+                    <td><button class="operation-btn" onclick="foto.grayscale()" title="GrayScale">GrayScale</button></td>
+                    <td><button class="operation-btn" onclick="foto.makeBright()" title="Brighter">Brighter</button></td>
+                    <td><button class="operation-btn" onclick="foto.makeDark()" title="Darker">Darker</button></td>
+               </tr>
+               <tr>
+                    <td><button class="operation-btn" onclick="foto.applyBlurFilter()" title="Blur">Blur</button></td>
+                    <td><button class="operation-btn" onclick="foto.applyEmbossFilter()" title="Emboss">Emboss</button></td>
+                    <td><button class="operation-btn" onclick="foto.applySharpFilter()" title="Sharp">Sharp</button></td>
+               </tr>
+          </table>
+     </div>
+</div>
+<div class="cursor"></div>
+<style>
+body {
+     font-family: "Segoe UI";
+     text-align: center;
+     user-select: none;
+     background: #0073e6;
+     color: white;
+}
+.buttons-section {
+     coolr: white;
+     width: 50%;
+     margin: auto;
+     left: 25%;
+     top: 64%;
+}
+.buttons-table {width:100%;}
+.buttons-table td {padding:3px;text-align:center;}
+#clearCanvas {
+     background: #198cff;
+     border-radius: 25%;
+     cursor: pointer;
+     text-decoration: none;
+}
+#clearCanvas:hover {background:#0000ff;color:lightgray;}
+.cursor {
+     animation: cursorAnimation1 .5s infinite alternate;
+     border: 3px solid cornflowerblue;
+     height: 25px;
+     width: 25px;
+     pointer-events: none;
+     position: absolute;
+     transition-timing-function: ease-in-out;
+     transition-duration: 333ms;
+}
+.cursor::after {
+     width: 25px;
+     height: 25px;
+     animation: cursorAnimation2 .5s infinite alternate;
+     position: absolute;
+     opacity: .5;
+     border: 7px solid aqua;
+}
+.download-btn {background:#198cff;}
+#editClearCanvas {
+     background: #198cff;
+     text-decoration: none;
+     border-radius: 25%;
+     cursor: pointer;
+}
+#editClearCanvas:hover {background:#0066cc;color:lightgray;}
+#editSaveAndDownload {
+     background: #198cff;
+     text-decoration: none;
+     border-radius: 25%;
+     cursor: pointer;
+}
+#editSaveAndDownload:hover {background:#0066cc;color:lightgray;}
+#editZoomIn {
+     text-decoration: none;
+     cursor: pointer;
+     background: #0080ff;
+     border-radius: 50px;
+}
+#editZoomNormally {
+     text-decoration: none;
+     cursor: pointer;
+     background: #0080ff;
+     border-radius: 50px;
+}
+#editZoomOut {
+     text-decoration: none;
+     cursor: pointer;
+     background: #0080ff;
+     border-radius: 50px;
+}
+#editZoomIn:hover {background:#0066cc;color:lightgray;}
+#editZoomNormally:hover {background:#0066cc;color:lightgray;}
+#editZoomOut:hover {background:#0066cc;color:lightgray;}
+.expand {
+     border: 3px solid blue;
+     animation: cursorAnimation3 .5s forwards;
+}
+#favoritesContainer:hover {cursor:pointer;color:lightgray;}
+#foto-file {display:none;}
+.file-upload-section {
+     margin: auto;
+     text-align: center;
+     padding: 5px;
+     margin-top: 5%;
+     width: 50%;
+     color: white;
+     font-family: "Segoe UI";
+}
+.image {
+     max-width: 100%;
+     max-height: 100%;
+}
+.img-container {
+     width: 50%;
+     height: 50%;
+     text-align: center;
+     margin: auto;
+}
+@keyframes cursorAnimation1 {
+     from{transform:scale(1);}
+     to {transform:scale(.777);}
+}
+@keyframes cursorAnimation2 {
+     from {transform:scale(1);}
+     to {transform:scale(.555);}
+}
+@keyframes cursorAnimation3 {
+     0% {transform:scale(1);}
+     50% {transform: scale(2.5);}
+     100% {transform:scale(1);opacity:0;}
+}
+#mode1 {
+     font-family: "Century Gothic";
+     background: #0000cc;
+     border: 1px solid black;
+     cursor: pointer;
+     color: aqua;
+     font-weight: bold;
+}
+#mode2 {
+     font-family: "Century Gothic";
+     background: #0000ff;
+     border: 1px solid black;
+     cursor: pointer;
+     color: #80eaff;
+     font-weight: bold;
+}
+.operation-btn {
+     background: cornflowerblue;
+     color: white;
+     box-shadow: 0 0.25rem 0.25rem rgba(0,0,0,0.25), 0 0 2.5rem rgba(0,0,0,0.25);
+     padding: 7px;
+     font-family: "Century Gothic";
+     border: 0;
+     width: 100%;
+     cursor: pointer;
+     font-weight: bold;
+}
+.operation-btn:hover {background:#198cff;color:lightgray;font-weight:normal;}
+#penSize:hover {cursor:pointer;color:lightgray;}
+#saveAndDownload {
+     background: #198cff;
+     text-decoration: none;
+     border-radius: 25%;
+     cursor: pointer;
+}
+#saveAndDownload:hover {background:#0000ff;color:lightgray;}
+#selectText {background:#198cff;cursor:pointer;}
+#selectText:hover {background:#0080ff;color:lightgray;}
+#zoomIn {
+     text-decoration: none;
+     cursor: pointer;
+     background: #0080ff;
+     border-radius: 50px;
+}
+#zoomNormally {
+     text-decoration: none;
+     cursor: pointer;
+     background: #0080ff;
+     border-radius: 50px;
+}
+#zoomOut {
+     text-decoration: none;
+     cursor: pointer;
+     background: #0080ff;
+     border-radius: 50px;
+}
+#zoomIn:hover {background:#0066cc;color:lightgray;}
+#zoomNormally:hover {background:#0066cc;color:lightgray;}
+#zoomOut:hover {background:#0066cc;color:lightgray;}
+</style>
+<script>
+const colorCircle=document.querySelectorAll(".color-circle")
+let penSize=10;
+let isDrawing;
+let x;
+let y;
+var canvas=document.querySelector("canvas");
+c=canvas.getContext("2d");
+document.getElementById("penSlider").title = document.getElementById("penSlider").value;
+canvas.addEventListener('mousemove', (event) => {
+     draw(event.offsetX,event.offsetY);
+});
+canvas.addEventListener("mouseup", () => {
+     isDrawing=false;
+     x=undefined;
+     y=undefined;
+});
+canvas.addEventListener("mousedown", (e) => {
+     isDrawing=true;
+     x=e.offsetX;
+     y=e.offsetY;
+});
+c.fillStyle="#ff0000";
+c.strokeStyle=c.fillStyle;
+document.getElementById("favcolor").title = document.getElementById("favcolor").value;
+function draw(x2,y2) {
+     if(isDrawing) {
+          c.beginPath();
+          c.arc(x2,y2,penSize,0,Math.PI*2);
+          c.closePath();
+          c.fill();
+     }
+}
+function drawLine(x,y,x2,y2) {
+     c.beginPath();
+     c.moveTo(x1,y1);
+     x.lineTo(x2,y2);
+     c.strokeStyle=c.fillStyle;
+     c.lineWidth=penSize*3;
+     c.stroke();
+}
+const removeActiveCircleColor=()=>{
+     colorCircle.forEach((circle) => {
+          circle.classList.remove("active");
+     });
+     document.getElementById("favcolor").title = document.getElementById("favcolor").value;
+};
+const selectColor=(elem)=>{
+     removeActiveCircleColor();
+     c.fillStyle=elem.getAttribute("data-color");
+     elem.classList.add("active");
+     document.getElementById("favcolor").title = document.getElementById("favcolor").value;
+};
+const favoriteColor=(elem)=>{
+     removeActiveCircleColor();
+     c.fillStyle=elem.value;
+     document.getElementById("favcolor").title = document.getElementById("favcolor").value;
+};
+function penSizeChange(pensize) {
+     penSize=pensize;
+     document.getElementById("penSlider").title = document.getElementById("penSlider").value;
+}
+document.querySelector("a").addEventListener('click', (event) => event.target.href = canvas.toDataURL());
+function wipeEverything() {
+     alert("This is deleting your work of art!");
+     window.location='startup.html'+window.location.hash;
+}
+function zoomCanvasIn() {
+     document.getElementById("paintingCanvas").style.width = "1000px";
+     document.getElementById("paintingCanvas").style.height = "1000px";
+}
+function zoomCanvasNormally() {
+     document.getElementById("paintingCanvas").style.width = "500px";
+     document.getElementById("paintingCanvas").style.height = "500px";
+}
+function zoomCanvasOut() {
+     document.getElementById("paintingCanvas").style.width = "250px";
+     document.getElementById("paintingCanvas").style.height = "250px";
+}
+const cursor=document.querySelector('.cursor');
+document.addEventListener('click', () => {
+     cursor.classList.add("expand");
+     var click = new Audio();
+     click.src = "click.wav";
+     click.play();
+     setTimeout(() => {
+          cursor.classList.remove("expand");
+     },500);
+});
+document.addEventListener('mousemove', e => {
+     cursor.setAttribute("style", "top: "+(e.pageY-10)+"px; left: "+(e.pageX-10)+"px;");
+});
+function showCustomImageMode() {
+     document.getElementById("customImageMode").style.display = "block";
+     document.getElementById("editingImageMode").style.display = "none";
+     document.getElementById("mode1").style.background = "#0000cc";
+     document.getElementById("mode1").style.color = "aqua";
+     document.getElementById("mode2").style.background = "#0000ff";
+     document.getElementById("mode2").style.color = "#80eaff";
+}
+function showEditImageMode() {
+     document.getElementById("customImageMode").style.display = "none";
+     document.getElementById("editingImageMode").style.display = "block";
+     document.getElementById("mode1").style.background = "#0000ff";
+     document.getElementById("mode1").style.color = "#80eaff";
+     document.getElementById("mode2").style.background = "#0000cc";
+     document.getElementById("mode2").style.color = "aqua";
+}
+var foto;
+window.onload = function() {foto=new Foto();}
+function zoomEditCanvasIn() {
+     document.getElementById("foto-image").style.width = "1000px";
+     document.getElementById("foto-image").style.height = "1000px";
+}
+function zoomEditCanvasNormally() {
+     document.getElementById("foto-image").style.width = "500px";
+     document.getElementById("foto-image").style.height = "500px";
+}
+function zoomEditCanvasOut() {
+     document.getElementById("foto-image").style.width = "250px";
+     document.getElementById("foto-image").style.height = "250px";
+}
+document.onkeyup = function(e) {
+    if(e.ctrlKey && e.which == 73) {zoomCanvasIn();zoomEditCanvasIn();}
+    if(e.ctrlKey && e.which == 78) {zoomCanvasNormally();zoomEditCanvasNormally();}
+    if(e.ctrlKey && e.which == 79) {zoomCanvasOut();zoomEditCanvasOut();}
+    if(e.ctrlKey && e.which == 82) {wipeEverything();}
+    if(e.which == 17 && e.which == 49) {showCustomImageMode();}
+    if(e.which == 17 && e.which == 50) {showEditImageMode();}
+    if(e.ctrlKey && e.which == 70) {
+        document.getElementById("favcolor").click();
+    }
+    if(e.ctrlKey && e.which == 68) {foto.export();}
+    if(e.which == 18 && e.which == 73) {
+        document.getElementById("foto-file").click();
+    }
+}
+function selectImage() {
+     document.getElementById("foto-file").click();
+}
+</script>
+<script src="https://rawcdn.githack.com/kousik19/foto.js/d604b02c69b6f037875bc4a3050b85d776dc4659/foto.js"></script>

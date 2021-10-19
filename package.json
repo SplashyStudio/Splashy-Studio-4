@@ -1,0 +1,29 @@
+{
+     "name": "Splashy Studio 4.0",
+     "version": "4.0",
+     "description": "",
+     "main": "main.js",
+     "scripts": {
+          "start": "electron .",
+          "pack": "electron-builder --dir",
+          "dist": "electron-builder",
+          "build": "electron-packager . SS4"
+     },
+     "build": {
+          "appId": "your.id",
+          "mac": {
+               "category": "your.app.category.type"
+          }
+     },
+     "keywords": [],
+     "author": "MWB",
+     "license": "MIT",
+     "devDependencies": {
+          "electron": "^10.4.7",
+          "electron-builder": "^22.11.7"
+     },
+     "dependencies": {
+          "electron-packager": "^15.4.0",
+          "electron-reload": "^1.5.0"
+     }
+}
