@@ -1,7 +1,7 @@
 {
      "name": "Splashy-Studio-4",
      "version": "4.0",
-     "description": "",
+     "description": "Splashy Studio 4.0 source code",
      "main": "main.js",
      "scripts": {
           "start": "electron .",
